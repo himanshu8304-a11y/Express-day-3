@@ -16,10 +16,6 @@ const soloUser=(req,res)=>{
 const createUser=(req,res)=>{
 
     const{name,gmail}=req.body;
-    if(!name || !gmail)               //fasle or false =false -----> skipped
-    {
-       return res.status(400).send("Message:name and gmail cannot be empty");
-    }
 
      user.push({
         id:user.length+1,
@@ -41,10 +37,6 @@ const updateAll=(req,res)=>{
         return res.status(404).send("Message:User not found");
     }
 
-    if(!name || ! gmail)
-    {
-        return res.status(400).send("Message:name and gmail are required");
-    }
     single_user.name=name;
     single_user.gmail=gmail;
 
@@ -64,25 +56,32 @@ const update=(req,res)=>{
          return res.status(404).send("Message:User not found");
     }
 
+    //Validate name if provided
     if(name !== undefined) {
-        if(name.trim() === "") {
-        return res.status(400).send("Name cannot be empty");
-        }
+        if (typeof name !== "string" || name.trim() === "") {
+            return res.status(400).send("Name must be a non-empty string");
+}
+    }
 
+    //Validate gmail if provided
+    if(gmail!==undefined)
+    {
+        if (typeof gmail !== "string" || gmail.trim() === "") {
+           return res.status(400).send("Gmail must be a non-empty string");
+}
+    }
+    
+    //Require at least one field
+    if (name === undefined && gmail === undefined) {
+        return res.status(400).send("Message: Provide at least one field to update");
+    }
+    
+    if (name !== undefined) {
         single_user.name = name;
     }
 
-
-    if(gmail!==undefined)
-    {
-        if(gmail.trim()===""){
-            return res.status(400).send("Gmail cannot be  empty");
-        }
-        single_user.gmail=gmail;
-    }
-
-    if (name === undefined && gmail === undefined) {
-        return res.status(400).send("Message: Provide at least one field to update");
+    if (gmail !== undefined) {
+        single_user.gmail = gmail;
     }
 
     res.json(
